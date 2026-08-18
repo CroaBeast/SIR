@@ -47,7 +47,7 @@ final class MainCommand implements TabExecutor {
         }
 
         private CommandDisplayer(CommandSender sender) {
-            super(main.getLibrary().getLoadedSender());
+            super(main.getSender());
             setLogger(!(sender instanceof Player)).setTargets(sender);
         }
 
@@ -69,8 +69,7 @@ final class MainCommand implements TabExecutor {
         if (main.getUserManager().hasPermission(sender, permission))
             return false;
 
-        main.getLibrary()
-                .getLoadedSender().addPlaceholder("{perm}", permission)
+        main.getSender().addPlaceholder("{perm}", permission)
                 .addPlaceholder("{permission}", permission)
                 .send(main.getCommandLang().toStringList("lang.no-permission"));
         return true;
@@ -100,7 +99,7 @@ final class MainCommand implements TabExecutor {
     private boolean handleLegacyModules(CommandSender s, String[] args) {
         ModuleManager moduleManager = main.getModuleManager();
 
-        MessageSender sender = main.getLibrary().getLoadedSender()
+        MessageSender sender = main.getSender()
                 .setTargets(s)
                 .setLogger(!(s instanceof Player));
 
@@ -132,7 +131,7 @@ final class MainCommand implements TabExecutor {
 
     private boolean handleLegacyCommands(CommandSender s, String[] args) {
         CommandManager commandManager = main.getCommandManager();
-        MessageSender sender = main.getLibrary().getLoadedSender()
+        MessageSender sender = main.getSender()
                 .setTargets(s)
                 .setLogger(!(s instanceof Player));
 
@@ -220,7 +219,7 @@ final class MainCommand implements TabExecutor {
             return false;
 
         CommandDisplayer displayer = new CommandDisplayer(sender);
-        MessageSender mainSender = main.getLibrary().getLoadedSender();
+        MessageSender mainSender = main.getSender();
 
         if (args.length < 1) return sendFallback(displayer);
 

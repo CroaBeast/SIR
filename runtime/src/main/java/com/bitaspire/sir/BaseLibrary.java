@@ -5,14 +5,18 @@ import me.croabeast.file.ConfigurableFile;
 import me.croabeast.takion.TakionLib;
 import me.croabeast.takion.channel.Channel;
 import me.croabeast.takion.logger.TakionLogger;
+import me.croabeast.takion.marker.Marker;
+import me.croabeast.takion.marker.MarkerManager;
 import me.croabeast.takion.message.MessageSender;
 import me.croabeast.takion.placeholder.PlaceholderManager;
+import me.croabeast.takion.token.Token;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.TreeMap;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 class BaseLibrary extends TakionLib {
@@ -69,6 +73,10 @@ class BaseLibrary extends TakionLib {
     private ConfigurableFile bossbars;
     private ConfigurableFile webhooks;
 
+    // Takion 2.0.0 made its own loaded sender a final template with no setter, so SIR keeps the one
+    // it configures here and hands out copies through SIRApi#getSender().
+    private MessageSender sender = new MessageSender(this);
+
     @SneakyThrows
     BaseLibrary(@NotNull SIRApi api) {
         super(api.getPlugin());
@@ -76,6 +84,7 @@ class BaseLibrary extends TakionLib {
         this.plugin = api.getPlugin();
 
         registerPlayerPlaceholders();
+        registerConfigMarkers();
 
         Channel channel = getChannelManager().identify("action_bar");
         channel.addPrefix("actionbar");
@@ -122,6 +131,76 @@ class BaseLibrary extends TakionLib {
         manager.load("{suffix}", api.getChat()::getSuffix);
     }
 
+    // The prefix, separator and center keys used to be TakionLib fields overridden through their
+    // getters. In 2.0.0 they are markers, so they are replaced by ones that read the SIR config on
+    // every resolution and keep following it across reloads.
+    private void registerConfigMarkers() {
+        MarkerManager manager = getMarkerManager();
+
+        manager.edit("lang_prefix", new ConfigMarker("lang_prefix") {
+            String regex() {
+                return Pattern.quote(api.getConfiguration().getPrefixKey());
+            }
+
+            @NotNull
+            public String resolve(@NotNull Token.Context context, @NotNull MatchResult match) {
+                return Boolean.TRUE.equals(context.getOption("remove")) ?
+                        "" : api.getConfiguration().getPrefix();
+            }
+        });
+
+        manager.edit("line_separator", new ConfigMarker("line_separator") {
+            String regex() {
+                return Pattern.quote(api.getConfiguration().getLineSeparator());
+            }
+
+            @NotNull
+            public String resolve(@NotNull Token.Context context, @NotNull MatchResult match) {
+                Object prefix = context.getOption("prefix");
+                return prefix == null ? "\n" : prefix + api.getConfiguration().getLineSeparator();
+            }
+        });
+
+        manager.edit("center_prefix", new ConfigMarker("center_prefix") {
+            String regex() {
+                return "^" + Pattern.quote(api.getConfiguration().getCenterPrefix());
+            }
+
+            @NotNull
+            public String resolve(@NotNull Token.Context context, @NotNull MatchResult match) {
+                return "";
+            }
+        });
+    }
+
+    private static abstract class ConfigMarker implements Marker {
+
+        private final String id;
+        private String source;
+        private Pattern pattern;
+
+        ConfigMarker(String id) {
+            this.id = id;
+        }
+
+        @NotNull
+        public final String getId() {
+            return id;
+        }
+
+        @NotNull
+        public final Pattern getPattern() {
+            String current = regex();
+            if (!current.equals(source)) {
+                source = current;
+                pattern = Pattern.compile(current);
+            }
+            return pattern;
+        }
+
+        abstract String regex();
+    }
+
     protected String normalizePlaceholderAliases(String message) {
         if (message == null || message.indexOf('{') < 0) return message;
 
@@ -151,7 +230,7 @@ class BaseLibrary extends TakionLib {
             }
         });
 
-        super.setLoadedSender(new MessageSender(this) {
+        sender = new MessageSender(this) {
             {
                 addFunctions(BaseLibrary.this::normalizePlaceholderAliases);
 
@@ -164,7 +243,7 @@ class BaseLibrary extends TakionLib {
                 setSensitive(false);
                 setErrorPrefix("&c[X]&7 ");
             }
-        });
+        };
 
         try {
             bossbars = new ConfigurableFile(plugin, "bossbars");
@@ -187,29 +266,9 @@ class BaseLibrary extends TakionLib {
         throw new IllegalStateException("TakionLogger can not be set");
     }
 
-    @Override
-    public void setLoadedSender(MessageSender loadedSender) {
-        throw new IllegalStateException("MessageSender can not be set");
-    }
-
     @NotNull
-    public String getLangPrefixKey() {
-        return api.getConfiguration().getPrefixKey();
-    }
-
-    @NotNull
-    public String getLangPrefix() {
-        return api.getConfiguration().getPrefix();
-    }
-
-    @NotNull
-    public String getCenterPrefix() {
-        return api.getConfiguration().getCenterPrefix();
-    }
-
-    @NotNull
-    public String getLineSeparator() {
-        return Pattern.quote(api.getConfiguration().getLineSeparator());
+    MessageSender getSender() {
+        return sender.copy();
     }
 
     @NotNull

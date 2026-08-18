@@ -72,7 +72,7 @@ final class Listeners implements Registrable {
         Player player = context.getPlayer();
         List<String> list = main.config.getNotAllowed();
 
-        MessageSender sender = main.getApi().getLibrary().getLoadedSender().setTargets(player);
+        MessageSender sender = main.getApi().getSender().setTargets(player);
         if (main.config.isRegex()) {
             Matcher match = Pattern.compile(key).matcher(message);
 

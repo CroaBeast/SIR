@@ -97,7 +97,7 @@ final class ExtensionMenu<I extends Information, E extends SIRExtension<I>> {
             return;
         }
 
-        api.getLibrary().getLoadedSender().setTargets(event.getWhoClicked())
+        api.getSender().setTargets(event.getWhoClicked())
                 .setLogger(!(event.getWhoClicked() instanceof Player))
                 .send("<P> &cCould not resolve a configurable " + typeLabel.toLowerCase() + ".");
     }

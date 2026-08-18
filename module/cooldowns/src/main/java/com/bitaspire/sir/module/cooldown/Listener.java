@@ -65,7 +65,7 @@ final class Listener extends com.bitaspire.sir.Listener {
         }
 
         if (user.isOnline())
-            main.getApi().getLibrary().getLoadedSender()
+            main.getApi().getSender()
                     .addPlaceholder("{time}", time - result)
                     .setLogger(false)
                     .setTargets(user.getPlayer())

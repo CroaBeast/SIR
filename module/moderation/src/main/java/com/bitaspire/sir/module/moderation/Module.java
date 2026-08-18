@@ -92,7 +92,7 @@ abstract class Module implements Registrable {
     abstract void process0(ChatProcessor.Context context);
 
     boolean validateAndExecuteActions(Player player, String message, int max) {
-        MessageSender sender = main.getApi().getLibrary().getLoadedSender()
+        MessageSender sender = main.getApi().getSender()
                 .addPlaceholder("{player}", player.getName())
                 .addPlaceholder("{message}", message)
                 .addPlaceholder("{type}", main.config.getName(moduleName))
@@ -111,7 +111,7 @@ abstract class Module implements Registrable {
         if (main.config.isViolationLogging())
             sender.copy().setTargets((Player) null).send(loggerResults);
 
-        main.getApi().getLibrary().getLoadedSender()
+        main.getApi().getSender()
                 .setTargets(player)
                 .send(file.toStringList("warnings"));
 
@@ -125,7 +125,7 @@ abstract class Module implements Registrable {
 
         if (count >= max) {
             violations.put(uuid, 0);
-            main.getApi().getLibrary().getLoadedSender()
+            main.getApi().getSender()
                     .setTargets(player)
                     .send(Configurable.toStringList(actions, "messages"));
 

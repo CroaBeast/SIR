@@ -16,6 +16,7 @@ import com.bitaspire.sir.module.ModuleManager;
 import com.bitaspire.sir.module.SIRModule;
 import com.bitaspire.sir.user.UserManager;
 import me.croabeast.takion.TakionLib;
+import me.croabeast.takion.message.MessageSender;
 import me.croabeast.vnc.VNC;
 import me.croabeast.vault.chat.ChatProvider;
 import me.croabeast.vault.economy.EconomyProvider;
@@ -484,6 +485,11 @@ public final class SIRPlugin extends JavaPlugin implements SIRApi {
     @NotNull
     public TakionLib getLibrary() {
         return library;
+    }
+
+    @NotNull
+    public MessageSender getSender() {
+        return library.getSender();
     }
 
     @NotNull

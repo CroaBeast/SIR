@@ -11,6 +11,7 @@ import com.bitaspire.sir.module.ModuleManager;
 import com.bitaspire.sir.user.SIRUser;
 import com.bitaspire.sir.user.UserManager;
 import me.croabeast.takion.TakionLib;
+import me.croabeast.takion.message.MessageSender;
 import me.croabeast.takion.placeholder.PlaceholderManager;
 import me.croabeast.vault.chat.ChatProvider;
 import me.croabeast.vault.economy.EconomyProvider;
@@ -123,6 +124,17 @@ public interface SIRApi {
      */
     @NotNull
     TakionLib getLibrary();
+
+    /**
+     * Returns a copy of SIR's preconfigured message sender.
+     *
+     * <p> Unlike {@link TakionLib#getLoadedSender()}, the returned sender already carries SIR's
+     * placeholder aliases, the Emojis and Tags formatters, and SIR's error prefix.
+     *
+     * @return a fresh sender copy.
+     */
+    @NotNull
+    MessageSender getSender();
 
     /**
      * Reloads the plugin configuration and all active modules/providers.

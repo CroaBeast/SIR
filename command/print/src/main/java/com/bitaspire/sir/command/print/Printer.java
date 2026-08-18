@@ -38,7 +38,7 @@ final class Printer {
 
     void print(CommandSender sender, String input, String key) {
         String message = SIRApi.joinArray(index, args);
-        String center = library.getCenterPrefix();
+        String center = api.getConfiguration().getCenterPrefix();
         int centerWidth = api.getConfiguration().getChatCenterWidth();
 
         ChannelManager channelManager = library.getChannelManager();

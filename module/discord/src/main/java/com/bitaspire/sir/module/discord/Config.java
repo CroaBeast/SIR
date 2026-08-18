@@ -118,7 +118,7 @@ final class Config {
                 if (StringUtils.isBlank(string)) return string;
 
                 String output = StringApplier.simplified(string).apply(base)
-                        .apply(s -> SIRApi.instance().getLibrary().replace(player, s, false))
+                        .apply(s -> SIRApi.instance().getLibrary().replace(player, s))
                         .apply(PrismaticAPI::stripAll)
                         .toString();
 

@@ -354,7 +354,7 @@ final class ExtensionConfigEditor<E extends SIRExtension<?>> {
     }
 
     private void sendMessage(@NotNull HumanEntity viewer, @NotNull String message) {
-        api.getLibrary().getLoadedSender().setTargets(viewer)
+        api.getSender().setTargets(viewer)
                 .setLogger(!(viewer instanceof Player))
                 .send("<P> &c" + message);
     }

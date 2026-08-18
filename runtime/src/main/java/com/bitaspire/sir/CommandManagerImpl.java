@@ -533,7 +533,7 @@ class CommandManagerImpl extends BaseManager<ProviderInformation> implements Com
                                  @NotNull InventoryClickEvent event,
                                  boolean syncCommands) {
         event.setCancelled(true);
-        api.getLibrary().getLoadedSender().setTargets(event.getWhoClicked())
+        api.getSender().setTargets(event.getWhoClicked())
                 .setLogger(!(event.getWhoClicked() instanceof Player))
                 .send("<P> &cThis option is only available on &fSIR+&c.");
     }

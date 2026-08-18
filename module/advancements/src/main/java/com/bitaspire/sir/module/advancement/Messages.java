@@ -62,7 +62,7 @@ final class Messages {
                 .collect(Collectors.toSet());
 
         TakionLib library = SIRApi.instance().getLibrary();
-        library.getLoadedSender().setTargets(players)
+        SIRApi.instance().getSender().setTargets(players)
                 .setParser(player)
                 .addFunctions(replacer::replace)
                 .send(messages.getOrDefault(type, new ArrayList<>()));
@@ -79,7 +79,7 @@ final class Messages {
                 Matcher pm = pPattern.matcher(c), cm = cPattern.matcher(c);
 
                 StringApplier applier = StringApplier.simplified(c)
-                        .apply(s -> library.replace(player, s, false))
+                        .apply(s -> library.replace(player, s))
                         .apply(PlainFormat.TRIM_START_SPACES::accept);
 
                 if (pm.find() && player != null) {

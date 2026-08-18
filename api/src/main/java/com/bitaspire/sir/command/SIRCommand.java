@@ -236,7 +236,7 @@ public abstract class SIRCommand extends BukkitCommand {
             private final CommandSender sender;
 
             private SenderImpl(SIRCommand command, CommandSender sender) {
-                super(command.lib.getLoadedSender());
+                super(SIRApi.instance().getSender());
                 this.lang = command.lang;
                 setSettings(this, this.sender = sender);
             }
@@ -261,7 +261,7 @@ public abstract class SIRCommand extends BukkitCommand {
         private final class Default extends MessageSender {
 
             private Default(CommandSender sender) {
-                super(SIRApi.instance().getLibrary().getLoadedSender());
+                super(SIRApi.instance().getSender());
                 setSettings(this, sender);
             }
 

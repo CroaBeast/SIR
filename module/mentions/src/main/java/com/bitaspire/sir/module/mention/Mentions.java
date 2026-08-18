@@ -87,7 +87,7 @@ public class Mentions extends SIRModule implements UserFormatter<ChatChannel>, C
 
                 boolean receiverEnabled = isToggled(target);
                 if (receiverEnabled) {
-                    getApi().getLibrary().getLoadedSender()
+                    getApi().getSender()
                             .setTargets(target.getPlayer())
                             .setLogger(false)
                             .addFunctions(op)
@@ -126,7 +126,7 @@ public class Mentions extends SIRModule implements UserFormatter<ChatChannel>, C
 
         if (senderEnabled && firstSound != null) firstSound.playSound(user);
         if (senderEnabled && firstMessages != null)
-            getApi().getLibrary().getLoadedSender()
+            getApi().getSender()
                     .addFunctions(operator)
                     .setLogger(false)
                     .setTargets(user.getPlayer())
