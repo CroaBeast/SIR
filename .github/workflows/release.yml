@@ -229,7 +229,7 @@ jobs:
             echo "**Full Changelog**: $FULL_CHANGELOG"
           } >> release-notes.md
 
-      - name: Create prerelease
+      - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -240,6 +240,4 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$VERSION" \
             --notes-file release-notes.md \
-            --target "$HEAD_SHA" \
-            --prerelease \
-            --latest=false
+            --target "$HEAD_SHA"
