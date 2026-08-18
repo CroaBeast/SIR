@@ -9,8 +9,8 @@ import org.bukkit.command.SimpleCommandMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -26,18 +26,25 @@ class CommandMapCleaner {
         Set<String> labels = labels(command);
         if (labels.isEmpty()) return;
 
-        Iterator<Map.Entry<String, Command>> iterator = knownCommands.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Command> entry = iterator.next();
+        // Paper's brigadier-backed knownCommands view returns an iterator that does not
+        // support remove, so the keys are collected first and dropped through Map#remove.
+        Set<String> stale = new HashSet<>();
+        for (Map.Entry<String, Command> entry : new ArrayList<>(knownCommands.entrySet())) {
             Command registered = entry.getValue();
 
             if (registered == command) {
-                iterator.remove();
+                stale.add(entry.getKey());
                 continue;
             }
 
             if (!(registered instanceof SIRCommand)) continue;
-            if (matchesLabel(entry.getKey(), labels)) iterator.remove();
+            if (matchesLabel(entry.getKey(), labels)) stale.add(entry.getKey());
+        }
+
+        for (String key : stale) {
+            try {
+                knownCommands.remove(key);
+            } catch (UnsupportedOperationException ignored) {}
         }
     }
 
