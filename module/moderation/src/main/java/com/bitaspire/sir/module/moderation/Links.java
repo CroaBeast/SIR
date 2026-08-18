@@ -1,7 +1,7 @@
 package com.bitaspire.sir.module.moderation;
 
 import com.bitaspire.sir.chat.ChatProcessor;
-import me.croabeast.prismatic.chat.ChatComponent;
+import me.croabeast.prismatic.element.Element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ final class Links extends Module {
         List<String> links = file.toStringList("allowed-links");
         boolean foundAny = false;
 
-        Matcher matcher = ChatComponent.URL_PATTERN.matcher(message);
+        Matcher matcher = Element.URL_PATTERN.matcher(message);
         List<String> restrictedLinks = new ArrayList<>();
 
         while (matcher.find()) {

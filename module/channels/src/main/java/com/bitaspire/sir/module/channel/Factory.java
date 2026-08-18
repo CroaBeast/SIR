@@ -18,9 +18,7 @@ import me.croabeast.common.applier.StringApplier;
 import me.croabeast.common.util.ReplaceUtils;
 import me.croabeast.file.Configurable;
 import me.croabeast.prismatic.PrismaticAPI;
-import me.croabeast.prismatic.chat.ChatComponent;
-import me.croabeast.prismatic.chat.MultiComponent;
-import me.croabeast.prismatic.chat.ChatFormat;
+import me.croabeast.prismatic.element.MarkupFormat;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -311,7 +309,7 @@ final class Factory {
             UserFormatter<ChatChannel> mentions = api.getModuleManager().getFormatter("Mentions");
             if (mentions != null) applier.apply(s -> mentions.format(user, s, this));
 
-            ChatFormat<ChatComponent<?>> f = MultiComponent.DEFAULT_FORMAT;
+            MarkupFormat f = MarkupFormat.prismatic();
             if (isDefault() && !f.isFormatted(applier.toString()))
                 return applier
                         .apply(s -> api.getLibrary().colorize(target, parser, s))
@@ -322,7 +320,7 @@ final class Factory {
             if (chat)
                 applier.apply(api.getLibrary()::prepareText);
 
-            return (isChatEventless() ? applier : applier.apply(f::removeFormat)).toString();
+            return (isChatEventless() ? applier : applier.apply(f::strip)).toString();
         }
 
         @Override
@@ -394,18 +392,18 @@ final class Factory {
     @Getter
     class ClickImpl implements Click {
 
-        private final ChatComponent.Click action;
+        private final me.croabeast.prismatic.element.Click action;
         private final String input;
 
         private ClickImpl(ConfigurationSection section) {
-            action = ChatComponent.Click.fromName(section.getString("action"));
+            action = me.croabeast.prismatic.element.Click.fromName(section.getString("action"));
             input = section.getString("input");
         }
 
         private ClickImpl(String string) {
             String[] array = string.replace("\"", "").split(":", 2);
 
-            action = ChatComponent.Click.fromName(array[0]);
+            action = me.croabeast.prismatic.element.Click.fromName(array[0]);
             input = array.length > 1 ? array[1] : null;
         }
 

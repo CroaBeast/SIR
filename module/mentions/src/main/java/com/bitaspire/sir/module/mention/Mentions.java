@@ -9,7 +9,7 @@ import com.bitaspire.sir.UserFormatter;
 import com.bitaspire.sir.channel.ChatChannel;
 import com.bitaspire.sir.module.SIRModule;
 import com.bitaspire.sir.user.SIRUser;
-import me.croabeast.prismatic.chat.MultiComponent;
+import me.croabeast.prismatic.element.Element;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,10 +106,12 @@ public class Mentions extends SIRModule implements UserFormatter<ChatChannel>, C
                 String click = op.apply(mention.getClick());
                 String result = op.apply(mention.getValue());
 
-                result = MultiComponent.fromString(getApi().getLibrary().getChatProcessor(), result)
-                        .setHover(hover)
-                        .setClick(click)
-                        .toFormattedString();
+                result = Element.parse(result, getApi().getLibrary().getMarkup())
+                        .toBuilder()
+                        .hover(hover)
+                        .click(click)
+                        .build()
+                        .toMarkup();
 
                 String replace = getApi().getLibrary().colorize(user.getPlayer(), result);
                 if (color != null) replace += color;

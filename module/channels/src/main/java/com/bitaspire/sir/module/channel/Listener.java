@@ -12,7 +12,7 @@ import com.bitaspire.sir.user.SIRUser;
 import me.croabeast.prismatic.PrismaticAPI;
 import me.croabeast.takion.TakionLib;
 import me.croabeast.takion.channel.Channel;
-import me.croabeast.prismatic.chat.MultiComponent;
+import me.croabeast.prismatic.element.Element;
 import me.croabeast.takion.message.MessageSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -122,7 +122,7 @@ final class Listener extends com.bitaspire.sir.Listener {
         String output = channel.formatString(user.getPlayer(), mask.getMessage(), true);
         if (main.config.useBukkitFormat()) {
             output = mask.restore(output);
-            event.setFormat(MultiComponent.DEFAULT_FORMAT.removeFormat(output).replace("%", "%%"));
+            event.setFormat(Element.stripMarkup(output).replace("%", "%%"));
             return;
         }
 
@@ -210,12 +210,12 @@ final class Listener extends com.bitaspire.sir.Listener {
             String temp = channel.formatString(p, player, displayMessage, true);
             temp = chat.formatString(p, player, temp);
 
-            MultiComponent component = MultiComponent.fromString(lib.getChatProcessor(), temp);
-            if (hover != null && !hover.isEmpty()) component.setHoverToAll(hover);
+            Element.Builder builder = Element.parse(temp, lib.getMarkup()).toBuilder();
+            if (hover != null && !hover.isEmpty()) builder.hoverAll(hover);
             if (click != null)
-                component.setClickToAll(click.getAction(), input);
+                builder.clickAll(click.getAction(), input);
 
-            BaseComponent[] compiled = component.compile(player);
+            BaseComponent[] compiled = builder.build().bungee(lib.getMarkup().context(player));
             mask.restore(compiled);
             p.spigot().sendMessage(compiled);
         }
