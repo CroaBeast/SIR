@@ -237,7 +237,7 @@ final class Factory {
             if (isLocal() && !getAccess().isDefault())
                 users.filter(u -> u.getChannelData().isToggled(getName()));
 
-            users.filter(u -> !u.getIgnoreData().isIgnoring(user, true));
+            users.filter(u -> !u.getIgnoreData().blocks(user, true));
             return users.toSet();
         }
 

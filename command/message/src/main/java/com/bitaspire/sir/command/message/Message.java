@@ -39,7 +39,7 @@ final class Message extends Command {
         if (Objects.equals(target, user))
             return Utils.create(this, s).setLogger(false).send("not-yourself");
 
-        if (target.getIgnoreData().isIgnoring(user, false))
+        if (target.getIgnoreData().blocks(user, false))
             return Utils.create(this, s).setLogger(false)
                     .addPlaceholder("{target}", target.getName())
                     .addPlaceholder("{type}", getLang().get("lang.channels.msg", ""))

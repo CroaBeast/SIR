@@ -82,4 +82,16 @@ public interface IgnoreData {
      * @param chat whether to unignore for chat messages or private messages
      */
     void unignoreAll(boolean chat);
+
+    /**
+     * Checks if the specified SIRUser is blocked, either individually or by the
+     * ignore-all setting.
+     *
+     * @param user the SIRUser to check
+     * @param chat whether to check for chat messages or private messages
+     * @return true if the user is blocked, false otherwise
+     */
+    default boolean blocks(SIRUser user, boolean chat) {
+        return isIgnoringAll(chat) || isIgnoring(user, chat);
+    }
 }

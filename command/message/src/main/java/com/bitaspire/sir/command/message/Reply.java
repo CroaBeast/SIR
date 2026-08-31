@@ -33,7 +33,7 @@ public class Reply extends Command {
 
         SIRUser initiator = main.getApi().getUserManager().getUser(init);
 
-        if (initiator.getIgnoreData().isIgnoring(receiver, false))
+        if (initiator.getIgnoreData().blocks(receiver, false))
             return Utils.create(this, s).setLogger(false)
                     .addPlaceholder("{target}", initiator.getName())
                     .addPlaceholder("{type}", getLang().get("lang.channels.msg", ""))

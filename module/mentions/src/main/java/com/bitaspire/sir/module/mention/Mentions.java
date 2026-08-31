@@ -71,7 +71,7 @@ public class Mentions extends SIRModule implements UserFormatter<ChatChannel>, C
             while (matcher.find()) {
                 SIRUser target = getApi().getUserManager().fromClosest(matcher.group(1));
                 if ((target == null || user == target ||
-                        target.getIgnoreData().isIgnoring(user, true)) ||
+                        target.getIgnoreData().blocks(user, true)) ||
                         (channel != null &&
                                 !channel.getRecipients(user).contains(target)))
                     continue;
@@ -165,7 +165,7 @@ public class Mentions extends SIRModule implements UserFormatter<ChatChannel>, C
 
     private boolean canSuggest(SIRUser user, SIRUser target) {
         if (target == null || !target.isOnline() || user == target) return false;
-        if (target.getIgnoreData().isIgnoring(user, true)) return false;
+        if (target.getIgnoreData().blocks(user, true)) return false;
         return user.getPlayer().canSee(target.getPlayer());
     }
 }
