@@ -45,6 +45,10 @@ tasks.named<ShadowJar>("shadowJar") {
     archiveClassifier.set("")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+    // The Takion shaded jar carries kotlin-stdlib because Takion's own build applies the Kotlin
+    // Gradle plugin without having any Kotlin sources. SIR has no use for it either.
+    exclude("kotlin/**")
+
     dependsOn(apiProject.tasks.named("classes"))
     from(apiMainOutput)
     dependsOn(runtimeProject.tasks.named("classes"))
